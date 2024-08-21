@@ -10,10 +10,16 @@ export interface Person{
 
 interface PersonState{
     persons: Person[]
+    lastId: number
+    loading: boolean
+    error: string | null
 }
 
 const initialState: PersonState ={
     persons: [],
+    lastId: 0,
+    loading: false,
+    error: null
 }
 
 export const fetchPersons = createAsyncThunk('person/fetchPersons', async (_, thunkAPI) => {
@@ -48,19 +54,46 @@ export const PersonSlice = createSlice({
     initialState,
     reducers: {
         addPerson: (state, action: PayloadAction<{name: string}>)=> {
+            state.lastId + 1;
             state.persons.push({
-                id: state.persons.length,
+                id: state.lastId,
                 name: action.payload.name
             })
         },
     },
     extraReducers: (builder) => {
         builder
+        .addCase(fetchPersons.pending, (state) => {
+            state.loading = true
+            state.error = null
+        })
         .addCase(fetchPersons.fulfilled, (state, action) => {
+            state.loading = false
             state.persons = action.payload
+            // update last id
+            const maxId = Math.max(0, ...state.persons.map(person => person.id ))
+            state.lastId = maxId
+        })
+        .addCase(fetchPersons.rejected, (state, action)=> {
+            state.loading = false
+            state.error = action.payload as string
+        })
+        // handle create a new person
+        .addCase(savePerson.pending, (state) => {
+            state.loading = true
+            state.error = null
         })
         .addCase(savePerson.fulfilled,(state, action) => {
-            state.persons.push(action.payload)
+            state.loading = false
+            state.lastId += 1
+            state.persons.push({
+                id: state.lastId,
+                name: action.payload.name
+            });
+        })
+        .addCase(savePerson.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload as string
         })
 
     }
