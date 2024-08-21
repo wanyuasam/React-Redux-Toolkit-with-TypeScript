@@ -22,6 +22,7 @@ const initialState: PersonState ={
     error: null
 }
 
+// fetch users from the json placeholder - get request
 export const fetchPersons = createAsyncThunk('person/fetchPersons', async (_, thunkAPI) => {
     try{
         const response = await axios.get(url)
@@ -32,7 +33,7 @@ export const fetchPersons = createAsyncThunk('person/fetchPersons', async (_, th
     }
 })
 
-// create a new person entry
+// create a new person entry - post method
 export const savePerson = createAsyncThunk('person/savePerson', async (name:string, thunkAPI) => {
     try{
         const response = await axios.post(url, {name})
