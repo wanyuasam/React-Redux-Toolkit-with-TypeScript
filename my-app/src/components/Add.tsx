@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { useAppDispatch } from "../store/store"
-import { addPerson } from "../store/features/personSlice"
+import {  savePerson } from "../store/features/personSlice"
 
 export default function Add() {
     const name=useRef("")
@@ -10,7 +10,7 @@ export default function Add() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if(name.current.trim() !== ""){
-            dispatch(addPerson({name: name.current}))
+            dispatch(savePerson(name.current))
             name.current = ""
         }
     }
