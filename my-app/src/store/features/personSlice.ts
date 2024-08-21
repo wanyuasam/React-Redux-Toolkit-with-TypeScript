@@ -22,7 +22,7 @@ export const fetchPersons = createAsyncThunk('person/fetchPersons', async (_, th
         return response.data
     }
     catch(error){
-        return thunkAPI.rejectWithValue(error.response.data)
+        return thunkAPI.rejectWithValue("An error occured in fetching persons!")
     }
 })
 
@@ -37,7 +37,7 @@ export const savePerson = createAsyncThunk('person/savePerson', async (name:stri
             return thunkAPI.rejectWithValue(error.response?.data || "An error occured")
         }
         else{
-            return thunkAPI.rejectWithValue("An unexpected error occured")
+            return thunkAPI.rejectWithValue("An unexpected error occured in creating a new person entry")
         }
 
     }
@@ -55,8 +55,12 @@ export const PersonSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchPersons.fulfilled, (state, action) => {
+        builder
+        .addCase(fetchPersons.fulfilled, (state, action) => {
             state.persons = action.payload
+        })
+        .addCase(savePerson.fulfilled,(state, action) => {
+            state.persons.push(action.payload)
         })
 
     }
