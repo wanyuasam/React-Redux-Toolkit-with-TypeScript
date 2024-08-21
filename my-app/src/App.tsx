@@ -1,9 +1,12 @@
+import Add from "./components/Add"
+import List from "./components/List"
 
 function App() {
 
   return (
     <>
-        <h1>TSX</h1>        
+      <Add/>
+      <List/>
     </>
   )
 }
